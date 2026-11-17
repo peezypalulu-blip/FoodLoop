@@ -4,7 +4,7 @@
 Independent food-waste rescue, home-cooked meals and local marketplace project.
 Founder and product direction: Phenyo Lumatha.
 
-> **STATUS — 17 NOVEMBER 2026:** Project rebranded from FoodLoop to **PlateRipple**. The repository URL remains **FoodLoop** until its owner renames it in GitHub settings.  This repository exists but is **PUBLIC**. To protect the founder's requested private development, the complete PlateRipple source is **not yet uploaded here**. The v0.3 secure marketplace/payment prototype is prepared separately and has passed 30 local automated checks. These checks are NOT a live payment or security audit.
+> **STATUS — 17 NOVEMBER 2026:** Project rebranded from FoodLoop to **PlateRipple**. The repository URL remains **FoodLoop** until its owner renames it in GitHub settings.  This repository exists but is **PUBLIC**. To protect the founder's requested private development, the complete PlateRipple source is **not yet uploaded here**. The independent PlateRipple v0.5 application package is prepared separately and passed 36 automated local checks, plus a mobile interactive-preview smoke test. These are not a live payment or independent security audit. These checks are NOT a live payment or security audit.
 
 ## Vision
 
@@ -28,3 +28,13 @@ PLATERIPPLE aims to allow approved home cooks, pudding and dessert makers, baker
 5. Complete seller food-safety approval, privacy/POPIA checks, orders/refunds/fees testing, and trademark/name clearance before a public launch. PlateRipple has not yet been confirmed available on the official South African trademark register.
 
 This repository currently holds only public-safe setup and security information to avoid exposing unpublished proprietary work.
+
+
+## Latest verified release preparation — 17 November 2026
+
+- Public teaser and founder pages are branded **PlateRipple**, including pre-launch privacy, account-deletion, copyright and launch status notices.
+- The independent full development prototype **v0.5** has passed 36 local tests; source remains outside this PUBLIC repository until it is made private.
+- Public website publication is blocked until the owner enables GitHub Pages in repository settings. GitHub Actions currently reports `Resource not accessible by integration` when attempting to create the Pages site.
+- Google Search Console has not been verified, Google Play has not been submitted, and payments/account services are not live.
+- Proposed operator is **Mzanian 102 (Pty) Ltd**; corporate permission and founder intellectual-property arrangements require signed documentation and verification. No IP rights have been transferred by this README.
+- See [launch readiness tracker](../../issues/1) for verified blockers and required approvals.

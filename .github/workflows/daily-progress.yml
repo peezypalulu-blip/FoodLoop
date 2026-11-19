@@ -1,0 +1,78 @@
+name: PlateRipple daily roadmap progress
+
+on:
+  push:
+    paths:
+      - '.github/workflows/daily-progress.yml'
+  schedule:
+    - cron: '7 6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+  actions: read
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Post verified daily progress on GitHub roadmap
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PROJECT: "PlateRipple"
+          ISSUE: "2"
+        run: |
+          node --input-type=module <<'NODE'
+          const repo = process.env.GITHUB_REPOSITORY;
+          const token = process.env.GH_TOKEN;
+          const project = process.env.PROJECT;
+          const issue = Number(process.env.ISSUE);
+          const goals = {"PlateRipple":{"2026-11-20":"Enable public teaser GitHub Pages; verify HTTPS publication","2026-11-21":"Prepare separate private PlateRipple app repository and import v0.5; run CI","2026-11-22":"Confirm legal operator and prepare independent, secure database","2026-11-23":"Connect signup, email-code verification and protected sessions","2026-11-24":"Build seller application and owner approval","2026-11-25":"Verify opt-in nearby search and home-seller location privacy","2026-11-26":"Test Rescue Hour schedules, countdown and opt-in alerts","2026-11-27":"Implement server-side order, stock and customer history","2026-11-28":"Test merchant-approved payment-provider sandbox","2026-11-29":"Verify 15% fee ledger, signed webhook, refunds and duplicates","2026-11-30":"Review POPIA, seller safety, agreements, policies and trademarks","2026-12-01":"Run cross-device, security and end-to-end workflow tests","2026-12-02":"Onboard local closed-pilot sellers/testers safely","2026-12-03":"Conduct pilot go/no-go; prepare Play and search indexing gates"},"Horizon Origin":{"2026-11-20":"Review hosted Horizon AI reply failure and pending PR #4","2026-11-24":"Run PR #4 build/tests and reconcile with newer live Sites UI","2026-11-27":"Review privacy, consent and opt-in discovery","2026-12-01":"Test one real AI reply safely; defer billing PR #5","2026-12-03":"Reassess next Horizon maintenance task"}};
+          const headers = { "Authorization": "Bearer " + token, "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "Content-Type": "application/json" };
+          async function api(path,options={}) {
+            const response = await fetch("https://api.github.com/repos/" + repo + path, { ...options, headers: { ...headers, ...(options.headers||{}) } });
+            if (!response.ok) throw new Error("GitHub API " + response.status + " " + path + " " + (await response.text()).slice(0,180));
+            return response.json();
+          }
+          const dateParts = new Intl.DateTimeFormat("en-GB", {timeZone:"Africa/Johannesburg",year:"numeric",month:"2-digit",day:"2-digit"}).formatToParts(new Date());
+          const getPart = t => dateParts.find(x=>x.type===t)?.value;
+          const date = getPart("year")+"-"+getPart("month")+"-"+getPart("day");
+          const since = new Date(Date.now()-24*60*60*1000).toISOString();
+          const [issueData, commits] = await Promise.all([
+            api("/issues/"+issue),
+            api("/commits?since="+encodeURIComponent(since)+"&per_page=20")
+          ]);
+          const lines = (issueData.body||"").split(/\r?\n/);
+          const todos=lines.filter(x=>/^- \[[ xX]\] /.test(x));
+          const checked=todos.filter(x=>/^- \[[xX]\] /.test(x)).length;
+          const today = (goals[project]||{})[date] || (project==="Horizon Origin" ? "Maintenance hold: review only urgent issues" : "Review the next unchecked roadmap item");
+          const latest = commits.filter(c=>c.commit && c.commit.message).slice(0,3).map(c=>"- ["+c.sha.slice(0,8)+"]("+c.html_url+"): "+c.commit.message.split("\n")[0].slice(0,110));
+          const commitsLine = commits.length ? String(commits.length)+" commit(s) in the past 24 hours" : "No verified code changes in the past 24 hours";
+          let extra = "";
+          if (project==="PlateRipple") {
+            try {
+              const wf = await api("/actions/workflows/publish-pages.yml/runs?per_page=1");
+              const last = wf.workflow_runs?.[0];
+              extra = "Latest Pages publishing workflow: "+ (last ? (last.conclusion||last.status) + " ([run]("+last.html_url+"))" : "no run found") + ". A successful workflow must still be checked against the live website.";
+            } catch { extra = "GitHub Pages deployment status could not be verified."; }
+          } else {
+            try {
+              const pr = await api("/pulls/4");
+              extra = "Horizon AI reply PR #4: "+(pr.merged_at?"merged":pr.state)+". Merging GitHub code does not deploy its separate hosted Site.";
+            } catch { extra = "AI reply PR #4 status could not be verified."; }
+          }
+          const message = [
+          "### "+project+" — daily verified progress ("+date+" · South Africa)",
+          "**Last 24h:** "+commitsLine+".",
+          "**Recent commits:**", ...(latest.length?latest:["- None recorded"]),
+          "**Roadmap checklist:** "+checked+" of "+todos.length+" checked (counts only explicit GitHub issue checkboxes).",
+          "**Today’s focus:** "+today,
+          "**Release gate:** "+extra,
+          "**Status:** This is a repository activity report, not proof of production readiness. No customer launch, payment activation or Play Store publication is inferred.",
+          "",
+          "_Automated from actual GitHub data. Offline work does not appear until recorded. Day-by-day targets are goals, not guaranteed completion dates._"
+          ].join("\n");
+          const posted = await api("/issues/"+issue+"/comments",{method:"POST",body:JSON.stringify({body:message})});
+          console.log("Posted progress to "+posted.html_url);
+          NODE

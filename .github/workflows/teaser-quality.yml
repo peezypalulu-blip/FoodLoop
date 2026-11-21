@@ -1,0 +1,26 @@
+name: Validate PlateRipple public teaser
+on:
+  push:
+    branches: [main]
+    paths:
+      - "docs/**"
+      - "scripts/check-teaser.mjs"
+      - ".github/workflows/teaser-quality.yml"
+  pull_request:
+    paths:
+      - "docs/**"
+      - "scripts/check-teaser.mjs"
+      - ".github/workflows/teaser-quality.yml"
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+      - name: Check PlateRipple published teaser before release
+        run: node scripts/check-teaser.mjs

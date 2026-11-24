@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#0b3027">
+<meta name="robots" content="noindex,nofollow"><title>PlateRipple · Interactive Food Finder (Demonstration)</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:system-ui,sans-serif;background:#f4f8f0;color:#173b2a}button,input,select{font:inherit}button{cursor:pointer}a{color:inherit}
+header{background:#0b3027;color:#fff;padding:18px 16px}.wrap{max-width:780px;margin:auto}.brand{font-weight:900;letter-spacing:-1px;font-size:24px}.brand b{color:#cbf28c}.tiny{font-size:11px;color:#b5d6b6}main{padding:16px}.notice{padding:11px;background:#fff9e8;color:#644d1f;border:1px solid #f0deb3;border-radius:12px;font-size:12px;line-height:1.6}
+.hero{margin:16px 0;background:linear-gradient(115deg,#174b36,#23704a);color:#fff;border-radius:17px;padding:22px}.hero h1{font-size:clamp(25px,6vw,34px);margin:8px 0}.hero p{font-size:14px;line-height:1.6;color:#deeedf}.clock{font-variant-numeric:tabular-nums;font-weight:850;font-size:23px;color:#d4fb9d}
+.controls{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:16px 0}.controls label{font-size:11px;font-weight:750;display:grid;gap:6px}.controls input,.controls select{width:100%;min-width:0;border:1px solid #cadfc8;padding:11px;border-radius:9px;background:#fff;color:#173b2a}
+.filters{display:flex;gap:8px;overflow:auto;margin:14px 0}.filters button{white-space:nowrap;border-radius:30px;border:1px solid #cbdccb;background:#fff;padding:9px 13px;color:#284a34;font-weight:750;font-size:12px}.filters button.active{background:#174c35;color:#fff}.cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.card{border-radius:16px;overflow:hidden;background:#fff;border:1px solid #dce7d8}.art{height:128px;background:radial-gradient(circle,#fff9de,#dae8ca);display:grid;place-items:center;font-size:64px}.body{padding:13px}.body h2{font-size:15px;margin:0 0 5px}.muted{font-size:12px;color:#5d7964}.price{font-size:23px;font-weight:900;color:#136a3e;margin:10px 0}.price del{font-size:12px;font-weight:400;color:#92a099;margin-left:7px}.primary{background:#144d35;color:#fff;border:0;border-radius:9px;font-weight:800;padding:11px 13px}.card .primary{width:100%}.tabs{position:sticky;bottom:0;display:flex;gap:6px;padding:12px;background:#fff;border-top:1px solid #d5e4d2}.tabs button{flex:1;background:#e5f0e1;border:0;border-radius:10px;padding:12px 5px;color:#164c34;font-size:12px;font-weight:850}.tabs button.active{background:#174d37;color:#fff}
+.hide{display:none!important}.panel{background:#fff;border:1px solid #dae6d5;border-radius:14px;padding:20px;margin:14px 0}.toast{position:fixed;bottom:80px;left:15px;right:15px;max-width:400px;margin:auto;background:#daf5c6;border:1px solid #a9dc98;color:#1c4a2b;border-radius:10px;padding:13px;z-index:20;display:none}
+@media(max-width:600px){.controls{grid-template-columns:repeat(2,minmax(0,1fr))}.art{height:105px;font-size:52px}.body{padding:10px}.body h2{font-size:13px}}@media(max-width:350px){.controls{grid-template-columns:1fr}}
+</style></head>
+<body><header><div class="wrap"><div class="brand">↻ PLATE<b>RIPPLE</b></div><div class="tiny">ONE PLATE. ENDLESS POSSIBILITIES.</div></div></header>
+<main class="wrap"><div class="notice"><strong>Interactive preview only.</strong> All sellers, food offers, times, remaining portions and prices below are fictional. No real booking, purchase, payment, notification or delivery is made.</div>
+<section id="market"><div class="hero"><small>⚡ RESCUE DROP · SIMULATED CLOCK</small><h1>Good food. Another chance.</h1><p>Explore local food discovery, spend filters and Rescue Hours before the real service launches.</p><div class="clock" id="clock">00:24:15</div></div>
+<div class="controls"><label>Find food or seller<input id="search" type="search" placeholder="Chicken, curry…"></label>
+<label>Town<input id="town" placeholder="Kathu, Kuruman…"></label>
+<label>Budget<select id="budget"><option value="">Any price</option><option value="0">Free</option><option value="50">Up to R50</option><option value="100">Up to R100</option><option value="150">Up to R150</option></select></label>
+<label>Sort<select id="sort"><option value="default">Recommended</option><option value="low">Lowest price</option><option value="high">Highest price</option></select></label></div>
+<div class="filters" id="filters"><button class="active" data-kind="all">All food</button><button data-kind="restaurant">🍴 Rescue deals</button><button data-kind="home">🏠 Home kitchens</button><button data-kind="donation">💚 Free meals</button></div>
+<p class="muted" id="count"></p><section class="cards" id="cards" aria-live="polite"></section></section>
+<section class="panel hide" id="basket"><h2>🛍️ Your demo basket</h2><div id="lines"></div><h3 id="total"></h3><p class="muted">No actual orders or payments are made.</p></section>
+<section class="panel hide" id="alerts"><h2>🔔 Rescue reminders</h2><p>Preview what a genuine opt-in Rescue Hour reminder would look like.</p><label><input type="checkbox" id="notify"> Enable notification preview</label><p class="muted">Real phone push notifications require separately approved permissions and backend delivery, and are not connected.</p><button class="primary" id="preview-alert">Preview an alert</button></section>
+<section class="panel hide" id="about"><h2>My PlateRipple</h2><p>Founder's interactive marketplace prototype, not yet accepting real customers.</p><p>Next steps: verified sellers, safe-food validation, genuine stock, payments, proper customer support, and an independent production backend.</p><a href="index.html">About PlateRipple</a></section>
+</main>
+<nav class="tabs wrap" aria-label="App demo screens"><button class="active" data-tab="market">🍲 Discover</button><button data-tab="basket">🛍 Basket <span id="basket-count">0</span></button><button data-tab="alerts">🔔 Alerts</button><button data-tab="about">👤 Account</button></nav><div id="toast" class="toast" role="status"></div>
+<script>
+(()=>{'use strict';
+const meals=[
+{id:1,title:'Chicken & pap',seller:'Kathu Kitchen',town:'Kathu',kind:'restaurant',emoji:'🍗',price:60,was:100,stock:9},
+{id:2,title:'Beef stew & samp',seller:'Northern Plate',town:'Gamagara',kind:'restaurant',emoji:'🍲',price:95,was:140,stock:6},
+{id:3,title:'Pastry rescue bag',seller:'Rescue Bakery',town:'Kathu',kind:'restaurant',emoji:'🥐',price:35,was:75,stock:7},
+{id:4,title:'Home-cooked curry',seller:'Home Kitchen',town:'Kuruman',kind:'home',emoji:'🍛',price:78,was:78,stock:8},
+{id:5,title:'Community meal',seller:'Demo Donor',town:'Kathu',kind:'donation',emoji:'🥗',price:0,was:0,stock:5},
+{id:6,title:'Malva pudding',seller:'Local Bakery',town:'Kathu',kind:'home',emoji:'🍮',price:40,was:40,stock:4}
+];
+const $=s=>document.querySelector(s),esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+let kind='all',basket=[],tab='market',noticeTimer;
+function alertText(msg){const n=$('#toast');n.textContent=msg;n.style.display='block';clearTimeout(noticeTimer);noticeTimer=setTimeout(()=>n.style.display='none',3300)}
+function render(){const q=$('#search').value.toLowerCase(),town=$('#town').value.toLowerCase(),max=$('#budget').value,sort=$('#sort').value;
+let filtered=meals.filter(x=>(kind==='all'||kind===x.kind)&&(!q||[x.title,x.seller,x.town].join(' ').toLowerCase().includes(q))&&(!town||x.town.toLowerCase().includes(town))&&(max===''||x.price<=Number(max)));
+if(sort==='low')filtered.sort((a,b)=>a.price-b.price);if(sort==='high')filtered.sort((a,b)=>b.price-a.price);
+$('#count').textContent=filtered.length+' fictional meal offer(s)';
+$('#cards').innerHTML=filtered.length?filtered.map(x=>'<article class="card"><div class="art" aria-hidden="true">'+x.emoji+'</div><div class="body"><h2>'+esc(x.title)+'</h2><div class="muted">'+esc(x.seller)+' · '+esc(x.town)+'</div><div class="price">'+(x.price?'R'+x.price:'FREE')+(x.was>x.price?'<del>R'+x.was+'</del>':'')+'</div><div class="muted">'+Math.max(0,x.stock-basket.filter(y=>y.id===x.id).length)+' demo portions left</div><button class="primary" data-add="'+x.id+'" '+(basket.filter(y=>y.id===x.id).length>=x.stock?'disabled':'')+'>Add to demo basket ↗</button></div></article>').join(''):'<p>No demo meals match. Change your town or filters.</p>';
+$('#basket-count').textContent=basket.length;$('#lines').innerHTML=basket.length?basket.map((x,i)=>'<p>'+x.emoji+' '+esc(x.title)+' — R'+x.price+' <button data-remove="'+i+'">Remove</button></p>').join(''):'<p>Your basket is empty.</p>';$('#total').textContent='Demo total: R'+basket.reduce((n,x)=>n+x.price,0);
+}
+document.querySelectorAll('#search,#town,#budget,#sort').forEach(x=>x.addEventListener('input',render));
+$('#filters').addEventListener('click',e=>{const b=e.target.closest('button[data-kind]');if(!b)return;kind=b.dataset.kind;$('#filters').querySelectorAll('button').forEach(x=>x.classList.toggle('active',x===b));render()});
+$('#cards').addEventListener('click',e=>{const b=e.target.closest('[data-add]');if(!b)return;const m=meals.find(x=>x.id===Number(b.dataset.add));if(!m||basket.filter(x=>x.id===m.id).length>=m.stock)return;basket.push(m);render();alertText('Added to your demo basket. No money taken.')});
+$('#basket').addEventListener('click',e=>{const b=e.target.closest('[data-remove]');if(!b)return;basket.splice(Number(b.dataset.remove),1);render()});
+document.querySelectorAll('[data-tab]').forEach(b=>b.addEventListener('click',()=>{tab=b.dataset.tab;document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));for(const id of ['market','basket','alerts','about'])$('#'+id).classList.toggle('hide',id!==tab);window.scrollTo({top:0,behavior:'smooth'});render()}));
+$('#preview-alert').addEventListener('click',()=>alertText($('#notify').checked?'🔔 Rescue Drop preview: no genuine meal is available yet.':'Turn on the example reminder checkbox first.'));
+const now=Date.now();function clock(){const x=Math.max(0,1455-Math.floor((Date.now()-now)/1000));$('#clock').textContent=[Math.floor(x/3600),Math.floor(x%3600/60),x%60].map(v=>String(v).padStart(2,'0')).join(':')}
+setInterval(clock,1000);clock();render();
+})();
+</script></body></html>
